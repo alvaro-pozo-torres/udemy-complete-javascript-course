@@ -9,52 +9,61 @@ GAME RULES:
 
 */
 
-var scores, roundScores, activePlayer, isTheGameActive;
-
+var scores, roundScores, activePlayer, isTheGameActive, lastDice, valorLimite;
 initGame();
 
+document.querySelector('.settings').addEventListener('click', function () {
+    valorLimite = prompt("Ingresa el limite para ganar el juego. Luego se reiniciará el juego.");
+    initGame();
+})
+
 document.querySelector('.btn-roll').addEventListener('click', function () {
-    // 1. random number
-    var dice = Math.floor(Math.random()*6) + 1;
+    var dice1, dice2; 
     
-    // 2. display the result
-    var diceDOM = document.querySelector('.dice');
-    diceDOM.style.display = 'block';
-    diceDOM.src = 'dice-' + dice + '.png';
+    dice1 = lanzaDado();
+    dice2 = lanzaDado();
+//    console.log(activePlayer, lastDice, dice, valorLimite);
         
-    // 3. update the round IF the rolled number was not a 1.
-    if (dice !== 1 ){
-        //Add score
-        roundScore += dice;
-        document.querySelector('#current-' + activePlayer).textContent = roundScore;
-    } else {
-        //next player
-        alert('Salió 1. Cambio de jugador');
+    muestraDados(dice1, dice2);
+    console.log(dice1, dice2);
+        
+    if (dice1 === 1 || dice2 === 1 ){
+        //alert('Sacaste 1. Cambio de jugador');
         cambiaDeJugador();
-        
+    } else if (dice1 === dice2 && dice1 === 6) {
+        alert('Doble 6. Pierdes TODO!');
+        scores[activePlayer] = 0;
+        document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+        cambiaDeJugador();
+    } else {
+//        lastDice = dice;
+        roundScore = roundScore + dice1 + dice2;
+        document.querySelector('#current-' + activePlayer).textContent = roundScore;
     }
 });
 
 document.querySelector('.btn-hold').addEventListener('click', function () {
-    // ADD current score to global score
     scores[activePlayer] += roundScore;
     document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
     
-    if ( scores[activePlayer] < 50 ) {
+    if (valorLimite) {
+        var winningScore = parseInt(valorLimite);
+    } else {
+        winningScore = 100;
+    }
+    
+    if ( scores[activePlayer] < winningScore ) {
         cambiaDeJugador();    
     } else {
         document.getElementById
         document.querySelector('#name-' + activePlayer).textContent = 'WINNER!';
-        document.querySelector('.dice').style.display = 'none';
+        escondeDados();
         document.querySelector('.btn-roll').style.display = 'none';
         document.querySelector('.btn-hold').style.display = 'none';
         alert('Player ' + (activePlayer + 1) + ' WON!!!');
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
-        
-        
     }
-
 });
 
 document.querySelector('.btn-new').addEventListener('click', initGame);
@@ -64,7 +73,8 @@ function initGame() {
     scores = [0,0];
     activePlayer = 0;
     roundScore = 0;
-    document.querySelector('.dice').style.display = 'none';  
+    //lastDice = 0;
+    escondeDados();
     document.getElementById('score-0').textContent = '0';
     document.getElementById('score-1').textContent = '0';
     document.getElementById('current-0').textContent = '0';
@@ -85,6 +95,7 @@ function initGame() {
 }
 function cambiaDeJugador() {
     roundScore = 0;
+    //lastDice = 0;
     
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
     
@@ -94,15 +105,26 @@ function cambiaDeJugador() {
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
         
-    document.querySelector('.dice').style.display = 'none';
+    escondeDados();
 }
 
-//document.querySelector('#current-' + activePlayer).textContent = dice;
-//document.querySelector('#current-' + activePlayer).innerHTML = 'hola <b>a </b> todos';
-//var x = document.querySelector('#current-0').textContent;
-//console.log(x);
+function lanzaDado() {
+    return Math.floor(Math.random()*6) + 1;
+}
 
+function escondeDados() {
+    document.querySelector('.dice-1').style.display = 'none';
+    document.querySelector('.dice-2').style.display = 'none';
+}
 
+function muestraDados(val01, val02) {
+    document.querySelector('.dice-1').style.display = 'block';
+    document.querySelector('.dice-2').style.display = 'block';
+    
+    document.querySelector('.dice-1').src = 'dice-' + val01 + '.png';
+    document.querySelector('.dice-2').src = 'dice-' + val02 + '.png';
+    
+}
 
 
 
