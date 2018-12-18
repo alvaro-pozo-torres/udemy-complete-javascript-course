@@ -223,14 +223,14 @@ interviewQuestion('cook')('Ken');
 */
 ///////////////////////
 ////////// Bind, call, and apply
-
+/*
 var jhon = {
     name: 'Jhon',
     age: 26,
     job: 'teacher',
     presentation: function(style, timeOfDay) {
         if (style === 'formal') {
-            console.log('Good' + timeOfDay + 'ladies and gentelmen. I \'m ' + this.name + '. I work as ' + this.job + ' and I\'m ' + this.age + ' years old.');
+            console.log('Good ' + timeOfDay + ' ladies and gentelmen. I \'m ' + this.name + '. I work as ' + this.job + ' and I\'m ' + this.age + ' years old.');
         } else if (style === 'friendly') {
             console.log('Hi there. I \'m ' + this.name + '. I work as ' + this.job + ' and I\'m ' + this.age + ' years old. Have a nice ' + timeOfDay);
         }
@@ -247,12 +247,106 @@ var emily = {
 
 jhon.presentation.call(emily, 'friendly', 'morning');
 
+var jhonFriendly = jhon.presentation.bind(jhon, 'friendly');
+
+jhonFriendly('night');
+jhonFriendly('morning');
+
+var emilyFormal = jhon.presentation.bind(emily, 'formal');
+
+emilyFormal('afternoon');
 
 
 
+var years = [1990, 1969, 2010, 1977, 2004];
 
+function arrayCalc(arr, fn) {
+    var arrResult = [];
+    for (var i=0; i < arr.length; i++){
+        arrResult.push(fn(arr[i]));
+    }
+    return arrResult;
+}
 
+function calcAge(el) {
+    return 2018 - el;
+}
 
+function isFullAge(limit, elem) {
+    return elem >= limit;
+}
 
+var ages = arrayCalc(years, calcAge);
 
+var fullJapan = arrayCalc(ages, isFullAge.bind(this, 20));
+
+console.log(ages);
+console.log(fullJapan);
+*/
+
+( function() {
+    
+function aleatorio(rango){
+    return Math.floor(Math.random()*rango);
+}
+
+var Question = function (description, answers, correctAnswer) {
+    this.description = description;
+    this.answers = answers;
+    this.correctAnswer = correctAnswer;
+}
+
+var listOfQuestions = [];
+
+listOfQuestions.push(new Question('Quien falta?',['Vero', 'Mau', 'Alva'], 1));
+listOfQuestions.push(new Question('Quien es el mayor?',['Veronica', 'Mauricio', 'Alvaro'], 0));
+listOfQuestions.push(new Question('Mascota?',['Daffy', 'Kiara', 'Yessi'], 2));
+
+Question.prototype.showQuestion = function() {
+    console.log(this.description);
+    for (var i = 0; i < this.answers.length; i++){
+        console.log(i + '. ' + this.answers[i]);
+        }
+    return prompt('Ingresa el nro que corresponde a la respuesta correcta.');
+    };
+
+Question.prototype.validateAnswer = function(resp) {
+    if (resp == this.correctAnswer) {
+        console.log(': ' + resp + '. RESPUESTA CORRECTA!!!');
+        return(true);
+    } else {
+        console.log(': ' + resp + '. Respuesta incorrecta');
+        return(false);
+    }
+}
+
+var modificarMarcador = function (respCorrecta) {
+    if (respCorrecta) {
+        marcador ++;
+    }
+    console.log('Marcador acumulado: ' + marcador);
+}
+
+var aleatoria, respuesta, continuar, esRespuestaCorrecta, marcador;
+
+var jugar = function () {
+    continuar = true;
+    marcador = 0;
+    while (continuar) {
+        console.log('');
+        console.log('Escribe X para terminar.');
+        aleatoria = aleatorio(listOfQuestions.length);
+        respuesta = listOfQuestions[aleatoria].showQuestion();
+        esRespuestaCorrecta = listOfQuestions[aleatoria].validateAnswer(respuesta);
+        modificarMarcador(esRespuestaCorrecta);
+        if (respuesta === 'X') {
+            continuar = false;
+            console.log('Juego terminado.')
+        } 
+    }
+}
+
+jugar();
+
+}) ();
 
