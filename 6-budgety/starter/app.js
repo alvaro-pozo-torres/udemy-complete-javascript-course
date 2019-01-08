@@ -61,7 +61,8 @@ var budgetController = (function() {
 			// return the new elements
 			return newItem;
 		},
-		calculateBudget: function () {
+		
+        calculateBudget: function () {
 			//calculate total income and total expenses
 			calculateTotal('exp');
 			calculateTotal('inc');
@@ -78,7 +79,8 @@ var budgetController = (function() {
 			
 			
 		},
-		getBudget: function() {
+		
+        getBudget: function() {
 			return {
 				budget: data.budget,
 				totalIncome: data.totals.inc,
@@ -86,7 +88,8 @@ var budgetController = (function() {
 				percentage: data.percentage
 			};
 		},
-		testing: function() {
+		
+        testing: function() {
             console.log(data);
         }
 	}
@@ -172,7 +175,6 @@ var UIController = (function() {
 			} else {
 				document.querySelector(DOMstrings.percentageLabel).textContent = '---';
 			}
-			
 		}
     }
     
@@ -192,7 +194,7 @@ var controller = ( function(budgetCrt, UICtr) {
             }
         });
 		
-		document.querySelector(DOM.container).addEventListener('click', crtlDeleteItem);
+        document.querySelector(DOM.container).addEventListener('click', crtlDeleteItem);
 		
     };
     
@@ -254,9 +256,9 @@ var controller = ( function(budgetCrt, UICtr) {
 		}
 	};
 	
-    return {						// on these functions that work as modules, whatever is on the RETURN section, are the public elements
+    return { // on these functions that work as modules, whatever is on the RETURN section, are the public elements
         init: function() {
-            console.log('app started');
+            console.log('app started!!');
 			UICtr.displayBudget({
 				budget: 0,
 				totalInc: 0,
