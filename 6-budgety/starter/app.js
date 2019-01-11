@@ -158,6 +158,33 @@ var UIController = (function() {
 		expensesPercentageLabel: '.item__percentage'
 		
     };
+	
+	var formatNumber = function (num, type) {
+		
+		/*
+		+ or - before value
+		exactly 2 decimal points
+		comma as thousands separator
+		*/
+			
+		var numSplit, int, dec, sign;
+			
+		num = Math.abs(num);
+		num = num.toFixed(2);
+			
+		numSplit = num.split('.');
+			
+		int = numSplit[0];
+		dec = numSplit[1];
+			
+		if (int.length>3) {
+			int = int.substr(0, int.length -3) + ',' + int.substr(int.length - 3, 3);
+		}
+			
+		type ==='inc'? sign = '+': sign = '-';
+		
+		return sign + ' ' + int + '.' + dec;
+	};
     
     return {
         getInput: function() {
@@ -183,7 +210,7 @@ var UIController = (function() {
 			// replace placeholder with data
 			newHtml = html.replace('%id%', obj.id);
 			newHtml = newHtml.replace('%description%', obj.description);
-			newHtml = newHtml.replace('%value%', obj.value);
+			newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 			
 			// insert html into DOM
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -233,21 +260,25 @@ var UIController = (function() {
 			
 		},
 		
-        getDOMstrings: function() {
-            return DOMstrings;
-        },
-		
-		displayBudget: function(obj) {
-			document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
-			document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalIncome;
-			document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExpenses;
+        displayBudget: function(obj) {
+			
+			var type = (obj.budget >= 0 ? 'inc' : 'exp');
+			
+			document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(obj.budget, type);
+			document.querySelector(DOMstrings.incomeLabel).textContent = formatNumber(obj.totalIncome, 'inc');
+			document.querySelector(DOMstrings.expensesLabel).textContent = formatNumber(obj.totalExpenses, 'exp');
 			if (obj.percentage > 0) {
 				document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';
 			} else {
 				document.querySelector(DOMstrings.percentageLabel).textContent = '---';
 			}
-		}
-    }
+		},
+		
+		getDOMstrings: function() {
+            return DOMstrings;
+        }
+		
+	}
     
 })();
 
@@ -269,8 +300,6 @@ var controller = ( function(budgetCrt, UICtr) {
 		
     };
     
-    
-	
 	var updateBudget = function() {
         //1. calculate budget
 		budgetCrt.calculateBudget();
@@ -355,8 +384,8 @@ var controller = ( function(budgetCrt, UICtr) {
             console.log('app started!!');
 			UICtr.displayBudget({
 				budget: 0,
-				totalInc: 0,
-				totalExp: 0,
+				totalIncome: 0,
+				totalExpenses: 0,
 				percentage: -1
 			});
             setupEventListeners();
