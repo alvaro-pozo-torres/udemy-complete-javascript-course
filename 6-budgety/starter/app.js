@@ -155,7 +155,8 @@ var UIController = (function() {
 		expensesLabel: '.budget__expenses--value',
 		percentageLabel: '.budget__expenses--percentage',
 		container: '.container',
-		expensesPercentageLabel: '.item__percentage'
+		expensesPercentageLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
 		
     };
 	
@@ -259,6 +260,19 @@ var UIController = (function() {
 			});
 			
 		},
+        
+        displayMonth: function () {
+            
+            var now, year, month, months;
+            
+            months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+            now = new Date();
+            year = now.getFullYear();
+            month = now.getMonth();
+
+            document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' / ' + year;
+            
+        },
 		
         displayBudget: function(obj) {
 			
@@ -382,6 +396,7 @@ var controller = ( function(budgetCrt, UICtr) {
     return { // on these functions that work as modules, whatever is on the RETURN section, are the public elements
         init: function() {
             console.log('app started!!');
+            UICtr.displayMonth();
 			UICtr.displayBudget({
 				budget: 0,
 				totalIncome: 0,
