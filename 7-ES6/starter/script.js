@@ -104,8 +104,8 @@ console.log(`${firstName} `.repeat(5));
 */
 
 //////////////////////////
-//Lecture: Arrow Functions
-
+//Lecture: Arrow Functions I
+/*
 const years = [1990, 1965, 1982, 1977];
 
 //ES5
@@ -132,5 +132,76 @@ ages6 = years.map ((element, index) => {
 })
 
 console.log('ES6', years, ages6);
+*/
+
+//////////////////////////
+//Lecture: Arrow Functions II
+
+// ES5
+var box5 = {
+    color: 'green',
+    position: 1,
+    clickMe: function() {
+        
+        var self = this;
+        document.querySelector('.green').addEventListener('click', function() {           
+            var str = 'ES5. This is box # ' + self.position + ' and it is ' + self.color;
+            
+            alert(str);
+        })
+    }
+};
+
+//box5.clickMe();
+
+// ES6
+const box6 = {
+    color: 'green',
+    position: 1,
+    clickMe: function() {
+        document.querySelector('.green').addEventListener('click', () => {           
+            var str = 'ES6. This is box # ' + this.position + ' and it is ' + this.color;
+            
+            alert(str);
+        })
+    }
+};
+
+box6.clickMe();
+
+
+
+
+function Person(name) {
+    this.name = name;
+    
+}
+
+//ES5
+Person.prototype.myFriends5 = function (friends) {
+    
+    var arr = friends.map(function (element) {
+       return this.name + ' is friend with ' + element;
+    }.bind(this));
+    console.log(arr);
+}
+
+var friends = ['Bob', 'Jane', 'Mark'];
+
+new Person('Alvaro').myFriends5(friends);
+
+// ES6
+
+Person.prototype.myFriends6 = function (friends) {
+    
+    var arr = friends.map(element => `${this.name} is friend with(ES6) ${element}`);
+    console.log(arr);
+};
+
+new Person('Bru').myFriends6(friends);
+
+
+
+
 
 
