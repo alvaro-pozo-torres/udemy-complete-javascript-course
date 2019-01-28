@@ -409,7 +409,7 @@ var emily = new SmithPerson('Emilyy', 1983, 'Matias', 'Spanish');
 
 //////////////////////////
 //Lecture: Maps
-
+/*
 const question = new Map();
 
 question.set('question', 'What is the name of latest major JS version');
@@ -445,12 +445,206 @@ for (let [key, value] of question.entries()) {
 const answer = parseInt(prompt('Write the correct answer.'));
 
 console.log(question.get(answer === question.get('correct')));
+*/
+
+//////////////////////////
+//Lecture: Classes
+/*
+// ES5
+var Person5 = function(name, yearOfBirth, job) {
+    
+    this.name = name;
+    this.yearOfBirth =yearOfBirth;
+    this.job = job;
+}
+
+Person5.prototype.calculateAge = function() {
+    
+    var age = new Date().getFullYear - this.yearOfBirth;
+    console.log(age);
+}
+
+var jhon = new Person5('Jhon', 1990, 'writter');
+
+// ES6
+
+class Person6 {
+    constructor(name, yearOfBirth, job) {
+        this.name = name;
+        this.yearOfBirth =yearOfBirth;
+        this.job = job;
+    }
+    
+    calculateAge () {
+        var age = new Date().getFullYear - this.yearOfBirth;
+        console.log(age);
+    }
+    
+    static greeting() {
+        console.log('Hey there!!!');
+    }
+}
+
+const jhon6 = new Person6('Jhon6', 1996, 'writter6');
+
+Person6.greeting();
+*/
+
+//////////////////////////
+//Lecture: Classes and subclasses
+/*
+// ES5
+var Person5 = function(name, yearOfBirth, job) {
+    
+    this.name = name;
+    this.yearOfBirth =yearOfBirth;
+    this.job = job;
+}
+
+Person5.prototype.calculateAge = function() {
+    
+    var age = new Date().getFullYear() - this.yearOfBirth;
+    console.log(age);
+}
+
+var Athlete5 = function (name, yearOfBirth, job, olympicGames, medals) {
+    
+    Person5.call(this, name, yearOfBirth, job);
+    this.olympicGames = olympicGames;
+    this.medals = medals;
+};
+
+Athlete5.prototype = Object.create(Person5.prototype);
+
+Athlete5.prototype.wonMedal = function() {
+    this.medals++;
+    console.log(this.medals);
+}
+
+var jhonAtl5 = new Athlete5('Jhon', 1995, 'swimmer', 3, 10);
+
+jhonAtl5.wonMedal();
 
 
+// ES6
+
+class Person6 {
+    constructor(name, yearOfBirth, job) {
+        this.name = name;
+        this.yearOfBirth =yearOfBirth;
+        this.job = job;
+    }
+    
+    calculateAge () {
+        var age = new Date().getFullYear() - this.yearOfBirth;
+        console.log(age);
+    }
+}
+
+class Athelete6 extends Person6 {
+    
+    constructor(name, yearOfBirth, job, olympicGames, medals) {
+        super(name, yearOfBirth, job);
+        this.olympicGames = olympicGames;
+        this.medals = medals;
+    }
+    
+    wonMedals() {
+        this.medals++;
+        console.log(this.medals);
+    }
+}
+
+const jhonAtl6 = new Athelete6('Jhon6', 1995, 'runner', 5, 7);
+
+jhonAtl6.wonMedals();
+jhonAtl6.calculateAge();
+*/
+
+//////////////////////////
+// CODING CHALLENGE
+
+class TownElement {
+    constructor (name, yearOfBuild) {
+        this.name = name;
+        this.yearOfBuild = yearOfBuild;
+    }
+}
+
+class Park extends TownElement {
+    constructor(name, yearOfBuild, trees, parkArea){
+        super(name, yearOfBuild);
+        this.trees = trees;
+        this.parkArea = parkArea;
+    }
+    calculateTreesDensity() {
+        return (this.trees/this.parkArea);
+    }
+    hasMore1KTrees() {
+        return (this.trees > 1000);
+    }
+}
+
+class Street extends TownElement {
+    constructor(name, yearOfBuild, length, classification = 'Normal'){
+        super(name, yearOfBuild);
+        this.lenght = length;
+        this.classification = classification;
+    }
+}
+
+// Parks reports
+
+const arrayOfParks = [
+    new Park('San Pedro', 1950, 200, 5),
+    new Park('ExCombatientes', 1960, 4000, 8),
+    new Park('Demetrio Canelas', 1977, 1200, 7.5)
+]
+
+const arrayOfStreets = [
+    new Street('Bolivar', 1945, 0.6, 'Normal'),
+    new Street('Colombia', 1950, 1.2, 'Huge'),
+    new Street('Venezuela', 1955, 0.8),
+    new Street('Paccieri', 1960, 0.3, 'Tiny')
+    
+]
+
+console.log('----- PARKS ------');
+
+// average of parks: Our X parks have an avg of N years old.
+
+const currentYear = new Date().getFullYear();
+let avgAgeOfParks = 0;
+
+arrayOfParks.forEach(val => {
+    avgAgeOfParks = avgAgeOfParks + (currentYear - val.yearOfBuild)
+});
+
+avgAgeOfParks = avgAgeOfParks / arrayOfParks.length;
+
+console.log(`Our ${arrayOfParks.length} have an average of ${avgAgeOfParks} years.`);
+
+// list of parks density: X park has a tree density of N tress per square km
+arrayOfParks.forEach(val => console.log(`${val.name} park has a tree density of ${val.calculateTreesDensity()} tress per square km.`));
+
+arrayOfParks.forEach(val => {
+    if (val.hasMore1KTrees()) console.log(`MINE. ${val.name} park has more than 1K trees.`)
+});
 
 
+const i = arrayOfParks.map(element => element.trees).findIndex(element => element >= 1000);
+console.log(`${arrayOfParks[i].name} park has more than 1K trees.`)
 
 
+console.log('----- STREETS ------');
 
+let totalLengthOfStreets = 0;
 
+arrayOfStreets.forEach(val => {
+    totalLengthOfStreets = totalLengthOfStreets + val.lenght
+});
+
+console.log(`Our ${arrayOfStreets.length} have a total length of ${totalLengthOfStreets} Km and average of ${(totalLengthOfStreets/arrayOfStreets.length)} Km.`);
+
+arrayOfStreets.forEach(val => console.log(`${val.name} street, build on ${val.yearOfBuild}, is a ${val.classification} street.`));
 
