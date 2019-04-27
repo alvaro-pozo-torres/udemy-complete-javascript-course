@@ -16,8 +16,11 @@ console.log(`Using imported values. Default: ${str}, named: ${searchView.add(2, 
 //food2fork URL: https://www.food2fork.com/api/search
 
 import Search from './models/Search';
+import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
-import {elements} from './views/base';
+import {elements, renderLoader, clearLoader} from './views/base';
+
+
 
 /* global state of the app
  * - Search Object
@@ -28,9 +31,13 @@ import {elements} from './views/base';
 
 const state = {};
 
+/**
+ * SEARCH CONTROLER
+ */
 const controlSearch = async () => {
     //1. get query from the view
-    const query = searchView.getInput();
+    //JUST FOR TESTING   const query = searchView.getInput();
+    const query ='pizza';
         
     if (query) {
         //2. new search object and add to state
@@ -39,14 +46,22 @@ const controlSearch = async () => {
         //3. prepar UI for results
         searchView.clearInput();
         searchView.clearResults();
+        renderLoader(elements.searchResults);
 
-        //4. search for recipes
-        await state.search.getResults();
+        try {
+            //4. search for recipes
+            await state.search.getResults();
+            
+            //5. render results on UI
+            clearLoader();
 
-        //5. render results on UI
-        console.log(state.search.result)
+            searchView.renderResults(state.search.result); 
 
-        searchView.renderResults(state.search.result)
+        } catch (err) {
+            alert ('something went wrong with the search...');
+            clearLoader();
+        };
+
     }
 };
 
@@ -55,5 +70,59 @@ elements.searchForm.addEventListener('submit', e => {
     controlSearch();
 });
 
+//just for testing
+window.addEventListener('load', e => {
+    e.preventDefault();
+    controlSearch();
+});
+
+
+
+elements.searchResultsPages.addEventListener('click', e => {
+    const btn = e.target.closest('.btn-inline');
+    if (btn) {
+        const goToPage = parseInt(btn.dataset.goto, 10);
+        searchView.clearResults();
+        searchView.renderResults(state.search.result, goToPage);
+    }
+});
+
+/**
+ * RECIPE CONTROLER
+ */
+
+const controlRecipe = async () => {
+    //get the id from URL
+    const id = window.location.hash.replace('#', '');
+
+    console.log(id);
+        
+    if (id) {
+        //prepare UI for changes
+        
+        //create new recipe object
+        state.recipe = new Recipe(id);
+        
+        
+        //testing
+        window.r =state.recipe;
+
+        try {
+            // get recipe data
+            await state.recipe.getRecipe();
+
+            // calculate servings and time
+            state.recipe.calcTime();
+            state.recipe.calcServings();
+            
+            // render recipe
+            console.log(state.recipe);
+        } catch (err) {
+            alert('Error processing recipe');
+        }
+    }
+};
+
+ ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
 
