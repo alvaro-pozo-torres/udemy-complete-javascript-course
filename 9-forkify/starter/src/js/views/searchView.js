@@ -10,6 +10,14 @@ export const clearResults = () => {
     elements.searchResultsPages.innerHTML = '';
 };
 
+export const highLightSelected = id => {
+    const resultsArr = Array.from(document.querySelectorAll('.results__link'));
+    resultsArr.forEach(elem => {
+        elem.classList.remove('results__link--active');
+    });
+    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+};
+
 
 const limitRecipe = (title, limit = 17)   => {
     const newTitle = [];

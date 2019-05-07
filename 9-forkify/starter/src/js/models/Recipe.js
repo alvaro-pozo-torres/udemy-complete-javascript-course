@@ -11,7 +11,8 @@ export default class Recipe {
             const res = await axios(`${proxy}https://www.food2fork.com/api/get?key=${axiosKey}&rId=${this.id}`);
             this.title = res.data.recipe.title;
             this.author = res.data.recipe.publisher;
-            this.img = res.data.recipe.image;this.url = res.data.recipe.source_url;
+            this.img = res.data.recipe.image_url;
+            this.url = res.data.recipe.source_url;
             this.ingredients = res.data.recipe.ingredients;
                         
         } catch (error) {
@@ -31,7 +32,9 @@ export default class Recipe {
 
     parseIngredients() {
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
-        const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound']
+        const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
+        const units = [...unitsShort, 'Kg', 'g']
+
         const newIngredients = this.ingredients.map(el => {
             //1. uniform units
             let ingredient = el.toLowerCase();
@@ -43,7 +46,48 @@ export default class Recipe {
             ingredient = ingredient.replace(/ *\([^)]*\) */g, ' ');
 
             //3. parse ingredients into count, unit, and ingredient itself
-            return ingredient;
+            const arrIngredients = ingredient.split(' ');
+
+            const unitIndex = arrIngredients.findIndex(el2 => units.includes(el2));
+
+            let objIngredient;
+            if (unitIndex > -1) {
+                //there is an unit
+                // case: 4 1/2 cups, arrcount is [4, 1/2] ==> "4+1/2"
+                // case: 4 cups, arrCount is [4]
+
+                const arrCount = arrIngredients.slice(0, unitIndex);
+                let count;
+                if (arrCount.length === 1) {
+                    count = eval(arrIngredients[0].replace('-', '+'));
+                } else {
+                    count = eval(arrIngredients.slice(0, unitIndex).join('+'));
+                }
+
+                objIngredient ={
+                    count,
+                    unit: arrIngredients[unitIndex],
+                    ingredient: arrIngredients.slice(unitIndex + 1).join(' ')
+                };
+
+            } else if (parseInt(arrIngredients[0], 10)) {
+                //there is no unit, but the 1st elemeny is a number
+                objIngredient = {
+                    count: parseInt(arrIngredients[0], 10),
+                    unit: '',
+                    ingredient: arrIngredients.slice(1).join(' ')
+
+                }
+            } else if (unitIndex === -1) {
+                //there is no unit and no number
+                objIngredient = {
+                    count: 1,
+                    unit: '',
+                    ingredient
+                }
+            };
+            
+            return objIngredient;
 
         });
 
