@@ -26,6 +26,8 @@
     "@babel/polyfill": "^7.4.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "fractional": "^1.0.0",
+    "fracty": "^1.0.8"
   }
 }
