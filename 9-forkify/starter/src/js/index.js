@@ -112,6 +112,7 @@ const controlRecipe = async () => {
             // render recipe
             clearLoader();
             recipeView.renderRecipe(state.recipe);
+            console.log(state.recipe);
 
         } catch (err) {
             alert('Error processing recipe');
@@ -120,5 +121,24 @@ const controlRecipe = async () => {
 };
 
  ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
+ 
+ // handling recipe button clicks
+ elements.recipe.addEventListener('click', el => {
+    if (el.target.matches('.btn-decrease, .btn-decrease *')) {
+        //decrease button is cliecked
+        if (state.recipe.servings > 1) {
+            state.recipe.updateServings('dec');
+            recipeView.updateServingsIngredients(state.recipe);
+        }
+        
+    }
+
+    if (el.target.matches('.btn-increase, .btn-increase *')) {
+        //increase button is cliecked
+        state.recipe.updateServings('inc');
+        recipeView.updateServingsIngredients(state.recipe);
+    }
+
+ })
 
 
