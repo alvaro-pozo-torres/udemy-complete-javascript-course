@@ -1,5 +1,4 @@
 import { elements } from './base';
-//import { Fraction } from 'fractional';
 import fracty from 'fracty';
 
 export const clearRecipe = () => {
@@ -11,25 +10,7 @@ const formatCount = count => {
         return `${fracty(count)}`
     }
     return '?';
- /*   if (count) {
-        const [int, dec] = count.toString().split('.').map(elem => parseInt(elem, 10));
-
-        if (!dec) return count;
-
-        if (int === 0) {
-            const fr = new Fraction(count);
-            return `${fr.numerator}/${fr.denominator}`;
-        } else {
-            const fr = new Fraction(count - int);
-            return `${int} ${fr.numerator}/${fr.denominator}`;
-        }
-    }
-
-    return '?';
-    */
-   
 };
-
 
 const createIngredient = ingredient => `
     <li class="recipe__item">
@@ -90,7 +71,7 @@ export const renderRecipe = recipe => {
                 ${recipe.ingredients.map(el => createIngredient(el)).join('')}
             </ul>
 
-            <button class="btn-small recipe__btn">
+            <button class="btn-small recipe__btn recipe__btn--add">
                 <svg class="search__icon">
                     <use href="img/icons.svg#icon-shopping-cart"></use>
                 </svg>
