@@ -15,11 +15,11 @@ export const highLightSelected = id => {
     resultsArr.forEach(elem => {
         elem.classList.remove('results__link--active');
     });
-    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+    document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');
 };
 
 
-const limitRecipe = (title, limit = 17)   => {
+export const limitRecipe = (title, limit = 17)   => {
     const newTitle = [];
     if (title.length > limit) {
         title.split(' ').reduce((accumulator, current) => {
